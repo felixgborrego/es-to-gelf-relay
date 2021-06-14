@@ -25,7 +25,7 @@ func main() {
 
 		// log to both stderr and graylog2
 		log.SetOutput(io.MultiWriter(os.Stderr, gelfWriter))
-		log.Printf("logging to stderr & graylog2@'%s'", graylogAddr)
+		log.Printf("Sending logs to '%s'", graylogAddr)
 	} else {
 		log.Println("GRAYLOG_ADDRESS env missing using stdout")
 	}
@@ -38,14 +38,20 @@ func main() {
 
 		for {
 			line, err := reader.ReadString('\n')
-			if err == nil || err == io.EOF || len(line) == 0 {
+			if len(line) == 0 {
 				break
 			}
 
 			// Process the json line
 			var log ESLog
 			json.Unmarshal([]byte(line), &log)
-			ch <- log.Log
+			if len(log.Log) > 0 {
+				ch <- log.Log
+			}
+
+			if err != nil {
+				break
+			}
 		}
 	}
 

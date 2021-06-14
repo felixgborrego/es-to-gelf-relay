@@ -7,8 +7,8 @@ The main use case for this project is to send logs from *[AWS EKS Fargate using 
 ## Build
 
 ```
-docker build -t felixgarciaborrego/es-to-gelf-relay:0.0.1 . 
-docker push felixgarciaborrego/es-to-gelf-relay:0.0.1
+docker build -t felixgarciaborrego/es-to-gelf-relay:0.0.2 . 
+docker push felixgarciaborrego/es-to-gelf-relay:0.0.2
 ```
 # Run it locally:
 
