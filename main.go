@@ -32,13 +32,13 @@ func main() {
 
 	ch := make(chan string, 100)
 
-	helloHandler := func(w http.ResponseWriter, req *http.Request) {
+	httphandler := func(w http.ResponseWriter, req *http.Request) {
 		// ES messages may be send logs in batches
 		reader := bufio.NewReader(req.Body)
 
 		for {
 			line, err := reader.ReadString('\n')
-			if err != nil && err != io.EOF {
+			if err == nil || err == io.EOF || len(line) == 0 {
 				break
 			}
 
@@ -46,13 +46,12 @@ func main() {
 			var log ESLog
 			json.Unmarshal([]byte(line), &log)
 			ch <- log.Log
-
 		}
 	}
 
 	go relay(ch)
 
-	http.HandleFunc("/", helloHandler)
+	http.HandleFunc("/", httphandler)
 	log.Println("Listing for ES messages at http://localhost:8000/")
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }
